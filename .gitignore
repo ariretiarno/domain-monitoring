@@ -1,4 +1,6 @@
 # Binaries
+.kiro
+.kiro/*
 bin/
 *.exe
 *.dll
@@ -55,6 +57,5 @@ Thumbs.db
 internal/repository/test_shutdown_*
 internal/repository/2025*
 
-# Kiro (keep specs but ignore other Kiro files)
-.kiro/settings/
-.kiro/cache/
+# Kiro
+.kiro/
