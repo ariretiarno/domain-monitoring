@@ -1,0 +1,90 @@
+{{define "domain-detail"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Domain.Name}} - Domain Expiration Monitor</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; background: #f5f5f5; color: #333; line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        header { background: #2c3e50; color: white; padding: 20px 0; margin-bottom: 30px; }
+        header h1 { font-size: 24px; font-weight: 600; }
+        nav { margin-top: 10px; }
+        nav a { color: #ecf0f1; text-decoration: none; margin-right: 20px; }
+        nav a:hover { text-decoration: underline; }
+        .card { background: white; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #f8f9fa; font-weight: 600; width: 30%; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🌐 Domain Expiration Monitor</h1>
+            <nav>
+                <a href="/">Dashboard</a>
+                <a href="/config">Configuration</a>
+            </nav>
+        </div>
+    </header>
+    <div class="container">
+        <div class="card">
+            <h2>{{.Domain.Name}}</h2>
+            <p><a href="/">← Back to Dashboard</a></p>
+        </div>
+
+        <div class="card">
+            <h3>Domain Information</h3>
+            <table>
+                <tr><th>Expiration Date</th><td>{{.Domain.ExpirationDate.Format "2006-01-02"}}</td></tr>
+                <tr><th>Days Until Expiration</th><td>{{.Domain.DaysUntilExpiration}}</td></tr>
+                <tr><th>Registrar</th><td>{{.Domain.Registrar}}</td></tr>
+                <tr><th>Registrant</th><td>{{.Domain.Registrant}}</td></tr>
+                <tr><th>Last Checked</th><td>{{.Domain.LastChecked.Format "2006-01-02 15:04:05"}}</td></tr>
+                <tr><th>Next Check</th><td>{{.Domain.NextCheck.Format "2006-01-02 15:04:05"}}</td></tr>
+            </table>
+        </div>
+
+        <div class="card">
+            <h3>Nameservers</h3>
+            <ul>
+                {{range .Domain.Nameservers}}
+                <li>{{.}}</li>
+                {{end}}
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>Alert History</h3>
+            {{if .Alerts}}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sent At</th>
+                        <th>Threshold</th>
+                        <th>Status</th>
+                        <th>Error</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{range .Alerts}}
+                    <tr>
+                        <td>{{.SentAt.Format "2006-01-02 15:04:05"}}</td>
+                        <td>{{.GetThreshold}}</td>
+                        <td>{{if .Success}}✓ Sent{{else}}✗ Failed{{end}}</td>
+                        <td>{{.ErrorMessage}}</td>
+                    </tr>
+                    {{end}}
+                </tbody>
+            </table>
+            {{else}}
+            <p>No alerts sent yet.</p>
+            {{end}}
+        </div>
+    </div>
+</body>
+</html>
+{{end}}

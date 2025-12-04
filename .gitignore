@@ -1,0 +1,60 @@
+# Binaries
+bin/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool
+*.out
+
+# Dependency directories
+vendor/
+
+# Go workspace file
+go.work
+
+# Database files
+*.db
+*.db-shm
+*.db-wal
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Backup files
+backup*.sql
+*.sql.gz
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Test shutdown files
+internal/repository/test_shutdown_*
+internal/repository/2025*
+
+# Kiro (keep specs but ignore other Kiro files)
+.kiro/settings/
+.kiro/cache/

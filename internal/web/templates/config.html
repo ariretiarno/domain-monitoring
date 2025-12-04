@@ -1,0 +1,60 @@
+{{define "config-page"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration - Domain Expiration Monitor</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; background: #f5f5f5; color: #333; line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        header { background: #2c3e50; color: white; padding: 20px 0; margin-bottom: 30px; }
+        header h1 { font-size: 24px; font-weight: 600; }
+        nav { margin-top: 10px; }
+        nav a { color: #ecf0f1; text-decoration: none; margin-right: 20px; }
+        nav a:hover { text-decoration: underline; }
+        .card { background: white; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        form { margin-top: 20px; }
+        input, select { padding: 8px; margin: 5px 0; border: 1px solid #ddd; border-radius: 4px; width: 100%; max-width: 400px; }
+        label { display: block; margin-top: 10px; font-weight: 500; }
+        .btn { display: inline-block; padding: 10px 20px; background: #3498db; color: white; text-decoration: none; border-radius: 4px; border: none; cursor: pointer; }
+        .btn:hover { background: #2980b9; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🌐 Domain Expiration Monitor</h1>
+            <nav>
+                <a href="/">Dashboard</a>
+                <a href="/config">Configuration</a>
+            </nav>
+        </div>
+    </header>
+    <div class="container">
+        <div class="card">
+            <h2>Configuration</h2>
+            <form method="POST" action="/config">
+                <label>Monitoring Interval (hours):</label>
+                <input type="number" name="monitoring_interval" value="{{.Config.GetMonitoringInterval.Hours}}" min="1" required>
+                
+                <label>Google Chat Webhook URL:</label>
+                <input type="url" name="webhook_url" value="{{.Config.GoogleChatWebhook}}" placeholder="https://chat.googleapis.com/v1/spaces/...">
+                
+                <label>Retention Period (days):</label>
+                <input type="number" name="retention_period" value="{{printf "%.0f" (div .Config.GetRetentionPeriod.Hours 24)}}" min="1" required>
+                
+                <h3 style="margin-top: 30px;">Alert Thresholds (days before expiration)</h3>
+                <p style="font-size: 14px; color: #666; margin-bottom: 10px;">Enter comma-separated values (e.g., 90,60,30,7)</p>
+                <label>Alert Thresholds:</label>
+                <input type="text" name="alert_thresholds" value="{{range $i, $t := .Config.GetAlertThresholds}}{{if $i}},{{end}}{{printf "%.0f" (div $t.Hours 24)}}{{end}}" placeholder="90,60,30,7" required>
+                
+                <br><br>
+                <button type="submit" class="btn">Save Configuration</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
+{{end}}

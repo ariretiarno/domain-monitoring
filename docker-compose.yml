@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: dem-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-dem}
+      MYSQL_USER: ${MYSQL_USER:-demuser}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-dempassword}
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-rootpassword}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - dem-network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dem-app
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      # Database configuration
+      DB_DRIVER: mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: ${MYSQL_DATABASE:-dem}
+      DB_USER: ${MYSQL_USER:-demuser}
+      DB_PASSWORD: ${MYSQL_PASSWORD:-dempassword}
+      
+      # Application configuration
+      PORT: ${PORT:-8080}
+      MONITORING_INTERVAL: ${MONITORING_INTERVAL:-24h}
+      ALERT_THRESHOLDS: ${ALERT_THRESHOLDS:-90d,60d,30d,7d}
+      GOOGLE_CHAT_WEBHOOK: ${GOOGLE_CHAT_WEBHOOK:-}
+      RETENTION_PERIOD: ${RETENTION_PERIOD:-90d}
+    ports:
+      - "${PORT:-8080}:8080"
+    networks:
+      - dem-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  dem-network:
+    driver: bridge
