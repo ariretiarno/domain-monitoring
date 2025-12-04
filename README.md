@@ -1,6 +1,8 @@
 # Domain Expiration Monitor
 
 A Go-based application that monitors domain expiration dates via WHOIS queries and sends configurable alerts to Google Chat.
+<img width="1187" height="563" alt="image" src="https://github.com/user-attachments/assets/0c681ba4-1985-4115-a4d1-a6b83564a63c" />
+
 
 ## Features
 
